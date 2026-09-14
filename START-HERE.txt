@@ -1,0 +1,26 @@
+SPUNK CASES — GITHUB / VERCEL PACKAGE
+
+1. Extract this ZIP. Open the spunk-cases folder.
+2. Read README.md, starting with "GitHub → Vercel".
+3. Create a free Supabase database and run database/schema.sql,
+   then database/seed.sql in its SQL Editor.
+4. Upload the extracted files and folders to a private GitHub repository.
+   package.json must be at the repository root. Do NOT upload the ZIP itself.
+5. Import that GitHub repository into Vercel as a Next.js project.
+6. Set DATABASE_URL, APP_ORIGIN, INVITE_CODE, and ADMIN_PASSWORD_HASH
+   using the instructions in README.md, then deploy.
+
+PLAYER PROGRESS
+Balances, collections, rewards and history are saved in PostgreSQL.
+Players recover their profile using the SAME name and passcode.
+Redeploying the website will not reset that database.
+Keep the database account and take backups. The ZIP is the application,
+not a backup of player progress added after you launch.
+
+ARTWORK
+All 22 files in your supplied folder are included with their original names.
+The brief says 23 but actually names 22 items. No extra item was invented.
+
+This is a source package, not an already-connected cloud deployment.
+You must complete database/environment setup for gameplay and saving.
+No secrets, test players, node_modules, or generated build files are packaged.
