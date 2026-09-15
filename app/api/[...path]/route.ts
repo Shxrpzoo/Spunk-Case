@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { getDB } from "@/server/db";
 import { authenticate, authenticateAdmin } from "@/server/auth";
+import { leaderboard } from "@/server/leaderboard";
 import { GameError, session, digest, rateLimit } from "@/server/security";
 import { getState, play } from "@/server/game";
 import { adminOverview, adminMutate, inspectPlayer } from "@/server/admin";
@@ -81,18 +82,19 @@ async function handler(req: NextRequest, ctx: Context) {
         return ok(await adminMutate(db, body));
       }
     } else {
-      const s = await session(
-        db,
-        req.cookies.get("spunk_player")?.value,
-        "player",
-      );
-      const id = s.player_id!;
-      if (path === "state" && !isPost) return ok(await getState(db, id));
-      if (path === "play" && isPost) {
-        await rateLimit(db, "play:" + id, 100, 60);
-        return ok(await play(db, id, body));
-      }
-    }
+  const s = await session(
+    db,
+    req.cookies.get("spunk_player")?.value,
+    "player",
+  );
+  const id = s.player_id!;
+  if (path === "leaderboard" && !isPost) return ok(await leaderboard(db));
+  if (path === "state" && !isPost) return ok(await getState(db, id));
+  if (path === "play" && isPost) {
+    await rateLimit(db, "play:" + id, 100, 60);
+    return ok(await play(db, id, body));
+  }
+}
     throw new GameError("Not found.", 404);
   } catch (e) {
     if (e instanceof ZodError)
