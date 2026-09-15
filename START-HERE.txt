@@ -1,26 +1,36 @@
-SPUNK CASES — GITHUB / VERCEL PACKAGE
+SPUNK CASES v2 — THREE CASES, 108 CARDS
 
-1. Extract this ZIP. Open the spunk-cases folder.
-2. Read README.md, starting with "GitHub → Vercel".
-3. Create a free Supabase database and run database/schema.sql,
-   then database/seed.sql in its SQL Editor.
-4. Upload the extracted files and folders to a private GitHub repository.
-   package.json must be at the repository root. Do NOT upload the ZIP itself.
-5. Import that GitHub repository into Vercel as a Next.js project.
-6. Set DATABASE_URL, APP_ORIGIN, INVITE_CODE, and ADMIN_PASSWORD_HASH
-   using the instructions in README.md, then deploy.
+UPDATING YOUR EXISTING WORKING WEBSITE
 
-PLAYER PROGRESS
-Balances, collections, rewards and history are saved in PostgreSQL.
-Players recover their profile using the SAME name and passcode.
-Redeploying the website will not reset that database.
-Keep the database account and take backups. The ZIP is the application,
-not a backup of player progress added after you launch.
+1. Extract Spunk-Cases-V2.zip.
+2. Open spunk-cases/database/UPDATE-V2.sql in Notepad.
+3. Copy ALL of the SQL text in that file.
+4. In your EXISTING Supabase project, open SQL Editor, paste the SQL text into
+   a new query, and click Run. Do not type the filename into SQL Editor.
+   The script keeps existing players, passwords, Nuggets, cards, sessions,
+   rewards and history. It adds the new cards and effect/discovery storage.
+   It is safe to rerun. A successful SQL run may say "No rows returned".
+5. Update your GitHub repository with ALL files and folders INSIDE spunk-cases.
+   package.json and vercel.json must be at the repository root.
+   Upload the extracted files, not the ZIP itself. Include public/assets/items:
+   those are all 108 web-optimized card pictures.
+   GitHub's browser uploader may need several batches for this many files;
+   GitHub Desktop can commit the entire update together.
+6. Keep your existing working Vercel environment variables and Supabase project.
+   DATABASE_URL stays pointed at the SAME database.
+   APP_ORIGIN stays https://spunkcase.vercel.app.
+   Keep INVITE_CODE and ADMIN_PASSWORD_HASH. Leave USE_LOCAL_DB unset.
+7. Deploy the updated main branch in Vercel. Build: npm run build.
+   Node.js: 22.x. Output directory: default Next.js.
+8. Sign in using your existing name and passcode. Check all three cases and
+   the Leaderboard tab. Your saved progress remains in Supabase.
 
-ARTWORK
-All 22 files in your supplied folder are included with their original names.
-The brief says 23 but actually names 22 items. No extra item was invented.
+Optional SQL check after Step 4:
+SELECT id,name,price FROM spunk.cases ORDER BY price;
+SELECT count(*) FROM spunk.items;
+Expected defaults: Basic 20, Ash 100, Semen Satchel 150; 108 cards.
 
-This is a source package, not an already-connected cloud deployment.
-You must complete database/environment setup for gameplay and saving.
-No secrets, test players, node_modules, or generated build files are packaged.
+This package has been built and tested locally. It has NOT been pushed to your
+GitHub account or applied to your live Supabase database by the assistant.
+
+Details, rarities, odds and local development: README.md and CATALOG.md.
