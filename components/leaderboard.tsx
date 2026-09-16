@@ -29,7 +29,7 @@ export function Leaderboard({ state }: { state: State | null }) {
     return () => {
       active = false;
     };
-  }, [state?.player.id]);
+  }, [state?.player.id, state?.history?.[0]?.id]);
   async function refresh() {
     if (loading) return;
     setLoading(true);
