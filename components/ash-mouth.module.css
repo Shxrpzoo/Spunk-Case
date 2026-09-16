@@ -1,0 +1,102 @@
+.mouth {
+  perspective: 800px;
+}
+
+.upperJaw,
+.lowerJaw {
+  transform-box: view-box;
+  transform-origin: 210px 198px;
+}
+
+.smoke {
+  opacity: 0;
+  filter: blur(2px);
+  animation: smoke 3.8s ease-out infinite;
+}
+
+.smokeTwo {
+  animation-delay: -1.3s;
+}
+
+.smokeThree {
+  filter: blur(5px);
+  animation-delay: -2.6s;
+}
+
+.ember {
+  animation: ember 3s ease-in-out infinite;
+}
+
+.opening .upperJaw {
+  animation: upper-open 0.55s 0.52s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+
+.opening .lowerJaw {
+  animation: lower-open 0.55s 0.52s ease-out forwards;
+}
+
+.opening .cigarette {
+  transform-origin: 310px 206px;
+  animation: cigarette-drop 0.55s 0.52s ease-in forwards;
+}
+
+@keyframes smoke {
+  0% {
+    opacity: 0;
+    transform: translate(0, 4px) scale(0.8, 0.6);
+  }
+  20% {
+    opacity: 0.5;
+  }
+  65% {
+    opacity: 0.26;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-16px, -38px) scale(1.4, 1.15);
+  }
+}
+
+@keyframes ember {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes upper-open {
+  to {
+    transform: translateY(-35px) rotate(-9deg);
+  }
+}
+
+@keyframes lower-open {
+  to {
+    transform: translateY(25px) rotate(7deg);
+  }
+}
+
+@keyframes cigarette-drop {
+  to {
+    opacity: 0;
+    transform: translate(12px, 55px) rotate(24deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mouth .smoke {
+    animation: none;
+    opacity: 0.25;
+  }
+  .mouth .ember {
+    animation: none;
+  }
+  .opening .upperJaw,
+  .opening .lowerJaw,
+  .opening .cigarette {
+    animation: none;
+  }
+}
