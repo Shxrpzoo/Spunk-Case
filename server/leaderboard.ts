@@ -7,7 +7,8 @@ export async function leaderboard(db: DB): Promise<Leaderboards> {
  SELECT player_id,item_id,'RAW'::text effect FROM spunk.player_items
  UNION ALL SELECT player_id,item_id,effect FROM spunk.card_effects),
  valued AS (SELECT c.*,($1::jsonb->>i.rarity)::int * ($2::jsonb->>c.effect)::int value FROM cards c JOIN spunk.items i ON i.id=c.item_id),
- best AS (SELECT DISTINCT ON(player_id) player_id,item_id,effect,value FROM valued ORDER BY player_id,value DESC,item_id,effect),
+ best AS (SELECT DISTINCT ON(player_id) player_id,item_id,effect,value
+          FROM valued ORDER BY player_id,value DESC NULLS LAST,item_id,effect),
  openings AS (SELECT player_id,count(*)::int count FROM spunk.case_openings GROUP BY player_id),
  stats AS (SELECT p.id,p.name,p.balance,coalesce(o.count,0) cases,coalesce(b.value,0) card_value,b.item_id,b.effect FROM spunk.players p LEFT JOIN best b ON b.player_id=p.id LEFT JOIN openings o ON o.player_id=p.id)
  SELECT jsonb_build_object(
