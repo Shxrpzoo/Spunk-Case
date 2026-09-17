@@ -1,0 +1,277 @@
+.canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.card {
+  isolation: isolate;
+}
+.card :global(.quantity) {
+  z-index: 5;
+}
+.card:global(.card-poo) :global(.quantity) {
+  right: auto;
+  left: 9px;
+}
+.card :global(.item-meta) {
+  position: relative;
+  z-index: 4;
+}
+.card :global(.item-meta) :global(h3),
+.card :global(.card-price) {
+  text-shadow: 0 1px 5px #000c;
+}
+.card :global(.sell-card) {
+  position: relative;
+  background: #1b2422f2;
+}
+.cardEffect {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.materialVeil {
+  position: absolute;
+  inset: 0;
+}
+.cardRim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.spunk .materialVeil {
+  background:
+    radial-gradient(ellipse at 0 15%, #d9f4f32b, transparent 60%),
+    linear-gradient(
+      115deg,
+      #f2fff918,
+      transparent 30%,
+      #ffffff12 34%,
+      transparent 42%,
+      transparent 74%,
+      #e4eff01b
+    );
+  opacity: 0.7;
+}
+.spunk .cardRim {
+  box-shadow:
+    inset 0 0 17px #ecfffa30,
+    inset 0 0 0 1px #e5eff899;
+}
+.poo .materialVeil {
+  background:
+    radial-gradient(ellipse at 50% 100%, #75861e29, transparent 60%),
+    linear-gradient(140deg, #586a1230, transparent 50%, #a8bb2520);
+}
+.poo .cardRim {
+  box-shadow:
+    inset 0 0 18px #9aae3547,
+    inset 0 0 0 2px #8caa5377;
+}
+.smegma .materialVeil {
+  background:
+    radial-gradient(ellipse at 50% 33%, transparent 30%, #cc96132a 80%),
+    linear-gradient(140deg, #ffe19416, transparent 40%, #bd812211);
+}
+.smegma .cardRim {
+  box-shadow:
+    inset 0 0 23px #e2b64528,
+    inset 0 0 0 1px #efdba094;
+}
+.pooSeal {
+  position: absolute;
+  right: 9px;
+  top: 9px;
+  width: 33px;
+  height: 33px;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  border: 1px solid #b8ca6480;
+  border-radius: 10px;
+  background: linear-gradient(140deg, #4b572dd9, #171d0ded);
+  box-shadow:
+    0 3px 12px #0009,
+    0 0 20px #92bc2333;
+}
+.premiumCase {
+  aspect-ratio: 440/330;
+  max-width: 550px;
+  perspective: 1000px;
+}
+.scene {
+  position: absolute;
+  inset: auto 0 3%;
+  aspect-ratio: 3/2;
+  z-index: 2;
+  transform-style: preserve-3d;
+}
+.caseImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 12px #0005);
+  user-select: none;
+}
+.caseBody,
+.caseTop,
+.glitchSlice,
+.caseFluid {
+  position: absolute;
+  inset: 0;
+}
+.caseTop {
+  transform-origin: 70% 42%;
+}
+.basicCase .caseBody {
+  clip-path: polygon(0 39%, 85% 51%, 100% 36%, 100% 100%, 0 100%);
+}
+.basicCase .caseTop {
+  clip-path: polygon(0 0, 100% 0, 100% 36%, 85% 51%, 0 39%);
+}
+.satchelCase .caseBody {
+  clip-path: inset(55.9% 0 0 0);
+}
+.satchelCase .caseTop {
+  clip-path: inset(0 0 44% 0);
+  transform-origin: 50% 56%;
+}
+.caseFluid {
+  pointer-events: none;
+}
+.caseAura {
+  position: absolute;
+  inset: 18% 12% 4%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #b9d5bf19, transparent 70%);
+}
+.satchelCase .caseAura {
+  background: radial-gradient(ellipse, #d5d6ff23, transparent 68%);
+}
+.groundShadow {
+  position: absolute;
+  bottom: 3%;
+  left: 13%;
+  right: 13%;
+  height: 10%;
+  background: #0008;
+  border-radius: 50%;
+  filter: blur(9px);
+}
+.glitchSlice {
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(3px 0 0 #45dfcc) drop-shadow(-3px 0 0 #b759ff);
+}
+.innerGlow {
+  position: absolute;
+  left: 15%;
+  right: 15%;
+  top: 36%;
+  height: 15%;
+  border-radius: 50%;
+  opacity: 0;
+  background: radial-gradient(ellipse, #e1efc840, #121d13 45%, #070b08 70%);
+}
+.impactRing {
+  pointer-events: none;
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  height: 12%;
+  bottom: 0;
+  border-radius: 50%;
+  border: 1px solid #e7fee8;
+  opacity: 0;
+}
+.opening .scene {
+  animation: case-impact 1.1s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+.opening.basicCase .caseTop {
+  animation: unlock-lid 0.6s 0.45s cubic-bezier(0.18, 0.7, 0.2, 1) forwards;
+}
+.opening.satchelCase .caseTop {
+  animation: creature-emerge 0.65s 0.43s cubic-bezier(0.16, 0.7, 0.24, 1)
+    forwards;
+}
+.opening .caseFluid {
+  transition: opacity 0.35s 0.55s;
+  opacity: 0;
+}
+.opening .innerGlow {
+  animation: interior-light 0.7s 0.44s both;
+}
+.opening .impactRing {
+  animation: impact-ring 0.6s 0.45s ease-out both;
+}
+@keyframes case-impact {
+  0% {
+    transform: translate3d(0, var(--entry-height, -90px), 0)
+      rotate(var(--entry-angle, -7deg)) scale(0.95);
+    opacity: 0.35;
+  }
+  44% {
+    transform: translate3d(0, 8px, 0) rotate(var(--impact-angle, 2deg))
+      scale(1.035, 0.96);
+    opacity: 1;
+  }
+  62% {
+    transform: translate3d(0, -5px, 0) rotate(-0.4deg) scale(0.995, 1.01);
+  }
+  83%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes unlock-lid {
+  to {
+    transform: translate3d(-5px, var(--lid-rise, -46px), 8px)
+      rotate(var(--lid-angle, -19deg)) rotateX(22deg);
+  }
+}
+@keyframes creature-emerge {
+  to {
+    transform: scaleY(var(--creature-rise, 1.12));
+    filter: drop-shadow(0 0 12px #f4edff50);
+  }
+}
+@keyframes interior-light {
+  0% {
+    opacity: 0;
+  }
+  40%,
+  100% {
+    opacity: 1;
+    transform: scaleY(1.8);
+  }
+}
+@keyframes impact-ring {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.4);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.45);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .opening .scene,
+  .opening .caseTop,
+  .opening .innerGlow,
+  .opening .impactRing {
+    animation: none;
+  }
+  .glitchSlice {
+    display: none;
+  }
+}
