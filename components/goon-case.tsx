@@ -50,7 +50,7 @@ export function GoonCase({ opening = false }: { opening?: boolean }) {
       <div className={styles.crateHalo} />
       <div ref={root} className={styles.crateArt}>
         <Image
-          src="/cases/goon-case.webp"
+          src="public/cases/goon-case.webp"
           alt="The Return of the Goon case"
           width={1200}
           height={800}
