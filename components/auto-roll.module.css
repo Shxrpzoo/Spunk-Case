@@ -1,0 +1,124 @@
+.panel {
+  margin: 0 25px 25px;
+  border: 1px solid #ffffff14;
+  border-radius: 10px;
+  background: #191b20;
+  padding: 16px 18px;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.title {
+  font-family: var(--heading);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: #e7e9ee;
+}
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.field span {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: #8b909c;
+  text-transform: uppercase;
+}
+.input,
+.select {
+  border: 1px solid #41444d;
+  border-radius: 7px;
+  background: #282b33;
+  color: #e7e9ee;
+  padding: 7px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  width: 72px;
+}
+.select {
+  width: auto;
+  cursor: pointer;
+}
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #41444d;
+  border-radius: 7px;
+  background: #282b33;
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  align-self: flex-end;
+}
+.button:hover:not(:disabled) {
+  border-color: var(--lime);
+  color: var(--lime);
+}
+.buttonActive {
+  background: var(--lime);
+  border-color: var(--lime);
+  color: #0c0d0f;
+}
+.buttonActive:hover:not(:disabled) {
+  color: #0c0d0f;
+}
+.status {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #bcc1c6;
+}
+.statusActive {
+  color: var(--lime);
+}
+.net {
+  font-weight: 700;
+}
+.netUp {
+  color: #7be08a;
+}
+.netDown {
+  color: #ff8a8a;
+}
+.log {
+  margin-top: 12px;
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.logItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #ffffff14;
+  border-radius: 20px;
+  padding: 5px 11px 5px 8px;
+  font-size: 11px;
+  color: #d6d9de;
+  background: #14151a;
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--rarity, var(--lime));
+  flex-shrink: 0;
+}
