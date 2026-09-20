@@ -213,6 +213,7 @@ export function CaseRoom({
                   <CustomCase
                     ash={c.id === "ash"}
                     satchel={c.id === "satchel"}
+                    goon={c.id === "goon"}
                   />
                 </button>
                 <div className="tile-bottom">
@@ -310,6 +311,7 @@ export function CaseRoom({
             <CustomCase
               ash={ca.id === "ash"}
               satchel={ca.id === "satchel"}
+              goon={ca.id === "goon"}
               opening={stage === "drop"}
             />
           </div>
