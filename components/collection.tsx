@@ -6,6 +6,8 @@ import {
   colors,
   rarityGroups,
   cardValue,
+  collectionReward,
+  hiddenMystery,
   type Catalog,
 } from "@/lib/catalog";
 import type { State, Outcome, CardStack } from "@/lib/types";
@@ -186,9 +188,11 @@ export function Collection({
                         {completed.has("rarity:" + g.key)
                           ? "REWARD AWARDED"
                           : "+" +
-                            catalog.settings.rarityRewards[
-                              g.rarity
-                            ].toLocaleString("en-GB") +
+                            collectionReward(
+                              catalog,
+                              g.caseId,
+                              g.rarity,
+                            ).toLocaleString("en-GB") +
                             " SN"}
                       </span>
                     </button>
@@ -249,7 +253,11 @@ export function Collection({
                   .map((i) => (
                     <ItemCard
                       key={i.id}
-                      item={i}
+                      item={
+                        i.mystery && !discovered.has(i.id)
+                          ? hiddenMystery(i)
+                          : i
+                      }
                       quantity={owned.get(i.id)}
                       locked={!discovered.has(i.id)}
                     />

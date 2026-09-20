@@ -10,6 +10,8 @@ import {
   type Settings,
 } from "@/lib/catalog";
 import type { Outcome, State } from "@/lib/types";
+import { CoinLeaderboard } from "./coin-leaderboard";
+import { CoinCelebration } from "./coin-celebration";
 import { ItemArt, CardEffect } from "./item-card";
 const randomZone = () =>
   Math.floor(
@@ -25,9 +27,11 @@ export function Minigame({
   state,
   catalog,
   settings,
+  onLanded,
 }: {
   kind: "upgrade" | "coin";
   settings: Settings;
+  onLanded: () => void;
   run: (body: Record<string, unknown>) => Promise<Outcome | null>;
   busy: boolean;
   signedIn: boolean;
@@ -51,13 +55,16 @@ export function Minigame({
     [spinItem, setSpinItem] = useState("");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null),
     mounted = useRef(true),
-    lock = useRef(false);
+    lock = useRef(false),
+    landedRef = useRef(onLanded);
+  landedRef.current = onLanded;
   useEffect(() => {
     mounted.current = true;
     setZone(randomZone());
     return () => {
       mounted.current = false;
       if (timer.current) clearTimeout(timer.current);
+      if (kind === "coin") landedRef.current();
     };
   }, []);
   const cardMode = kind === "upgrade" && mode === "card",
@@ -126,7 +133,10 @@ export function Minigame({
             }
           : { kind: "nugget-upgrade", wager: n, multiplier, zone },
     );
-    if (!mounted.current) return;
+    if (!mounted.current) {
+      if (kind === "coin") landedRef.current();
+      return;
+    }
     if (!out) {
       lock.current = false;
       setSpinning(false);
@@ -148,6 +158,7 @@ export function Minigame({
     sound();
     timer.current = setTimeout(() => {
       if (!mounted.current) return;
+      if (kind === "coin") landedRef.current();
       setResult(out);
       setSpinning(false);
       lock.current = false;
@@ -177,7 +188,13 @@ export function Minigame({
         )}
       </div>
       <div className="game-lab">
-        <div className={"game-display " + (spinning ? "is-spinning" : "")}>
+        <div
+          className={"game-display " + (spinning ? "is-spinning" : "")}
+          style={{ position: "relative", overflow: "hidden" }}
+        >
+          {kind === "coin" && result && (
+            <CoinCelebration key={result.id} won={!!result.won} />
+          )}
           {kind === "upgrade" ? (
             <>
               <div
@@ -419,7 +436,7 @@ export function Minigame({
               <p className="game-note">
                 A failed roll destroys one selected copy. A success replaces its
                 effect with {target.toLowerCase()}. Values are based on the
-                card’s rarity; effects do not stack.
+                card’s pull odds; effects do not stack.
               </p>
             </>
           ) : (
@@ -553,6 +570,13 @@ export function Minigame({
           )}
         </div>
       </div>
+      {kind === "coin" && (
+        <CoinLeaderboard
+          state={state}
+          paused={spinning || busy}
+          resultId={result?.id}
+        />
+      )}
     </section>
   );
 }

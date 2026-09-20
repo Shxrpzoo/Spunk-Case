@@ -62,7 +62,7 @@ export function ItemCard({
         )}
       </div>
       <div className="item-meta">
-        <span className="rarity">{item.rarity}</span>
+        <span className="rarity">{item.mystery ? "MYSTERY" : item.rarity}</span>
         <h3>{item.name}</h3>
         <span className="micro">
           {odds !== undefined
@@ -75,7 +75,7 @@ export function ItemCard({
                   ? "NOT DISCOVERED"
                   : "ORIGINAL"}
         </span>
-        {odds === undefined && !locked && (
+        {!locked && (
           <strong className="card-price">
             {cardValue(item, effect).toLocaleString("en-GB")} SN
           </strong>

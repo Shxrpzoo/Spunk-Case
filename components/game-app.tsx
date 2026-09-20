@@ -15,7 +15,7 @@ import {
   LogOut,
   RefreshCw,
 } from "lucide-react";
-import { seedCatalog, colors } from "@/lib/catalog";
+import { seedCatalog, colors, cardValue } from "@/lib/catalog";
 import type { State, Outcome } from "@/lib/types";
 import { api, ApiError } from "@/lib/api";
 import { AuthDialog } from "./auth-dialog";
@@ -23,6 +23,7 @@ import { Leaderboard } from "./leaderboard";
 import { CaseRoom } from "./case-room";
 import { Collection } from "./collection";
 import { Rewards } from "./rewards";
+import { MysteryReveal } from "./mystery-reveal";
 import { Minigame } from "./minigames";
 import { HistoryView } from "./history";
 import { ItemArt } from "./item-card";
@@ -64,7 +65,9 @@ export function GameApp() {
     stateRef = useRef<State | null>(null),
     audio = useRef<AudioContext | null>(null),
     revision = useRef(0),
-    refreshSequence = useRef(0);
+    refreshSequence = useRef(0),
+    coinHold = useRef(false),
+    heldCoin = useRef<Outcome | null>(null);
   useModalFocus(auth || !!outcome, () => {
     setAuth(false);
     setOutcome(null);
@@ -75,7 +78,11 @@ export function GameApp() {
       sequence = ++refreshSequence.current;
     try {
       const s = await api<State>("state");
-      if (version !== revision.current || sequence !== refreshSequence.current)
+      if (
+        coinHold.current ||
+        version !== revision.current ||
+        sequence !== refreshSequence.current
+      )
         return null;
       stateRef.current = s;
       setState(s);
@@ -86,7 +93,11 @@ export function GameApp() {
       setSync("Progress saved");
       return s;
     } catch (e) {
-      if (version !== revision.current || sequence !== refreshSequence.current)
+      if (
+        coinHold.current ||
+        version !== revision.current ||
+        sequence !== refreshSequence.current
+      )
         return null;
       if (e instanceof ApiError && e.status === 401) {
         stateRef.current = null;
@@ -167,6 +178,23 @@ export function GameApp() {
       }
     } catch {}
   };
+  const finishCoin = useCallback(() => {
+    const out = heldCoin.current;
+    if (!out) return;
+    heldCoin.current = null;
+    coinHold.current = false;
+    if (stateRef.current) {
+      const updated = {
+        ...stateRef.current,
+        player: { ...stateRef.current.player, balance: out.balance },
+      };
+      stateRef.current = updated;
+      setState(updated);
+    }
+    lock.current = false;
+    setBusy(false);
+    void refresh();
+  }, [refresh]);
   async function run(body: Record<string, unknown>): Promise<Outcome | null> {
     if (!stateRef.current) {
       setAuth(true);
@@ -179,6 +207,7 @@ export function GameApp() {
     }
     lock.current = true;
     revision.current++;
+    coinHold.current = body.kind === "coin";
     setBusy(true);
     setError("");
     const request = {
@@ -192,6 +221,10 @@ export function GameApp() {
       const out = await api<Outcome>("play", request);
       pending.current = null;
       sessionStorage.removeItem("spunk-pending");
+      if (body.kind === "coin") {
+        heldCoin.current = out;
+        return out;
+      }
       if (stateRef.current) {
         const updated = {
           ...stateRef.current,
@@ -210,8 +243,11 @@ export function GameApp() {
       }
       return null;
     } finally {
-      lock.current = false;
-      setBusy(false);
+      if (!heldCoin.current) {
+        coinHold.current = false;
+        lock.current = false;
+        setBusy(false);
+      }
     }
   }
   async function recover() {
@@ -268,9 +304,11 @@ export function GameApp() {
     location.hash = id;
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const wonItem = outcome?.itemId
-    ? catalog.items.find((i) => i.id === outcome.itemId)
-    : null;
+  const wonItem =
+    outcome?.item ??
+    (outcome?.itemId
+      ? catalog.items.find((i) => i.id === outcome.itemId)
+      : null);
   return (
     <div className="app-shell">
       <header className="topbar">
@@ -470,6 +508,7 @@ export function GameApp() {
           <Minigame
             key={page}
             kind={page}
+            onLanded={finishCoin}
             state={state}
             catalog={catalog}
             settings={catalog.settings}
@@ -500,7 +539,14 @@ export function GameApp() {
           }}
         />
       )}
-      {outcome && wonItem && (
+      {outcome && wonItem?.mystery && (
+        <MysteryReveal
+          key={outcome.id}
+          item={wonItem}
+          onClose={() => setOutcome(null)}
+        />
+      )}
+      {outcome && wonItem && !wonItem.mystery && (
         <div className="modal-backdrop">
           <section
             className={"reveal-modal " + wonItem.rarity.toLowerCase()}
@@ -519,6 +565,7 @@ export function GameApp() {
             </div>
             <span className="rarity">{wonItem.rarity}</span>
             <h2 id="reveal-title">{wonItem.name}</h2>
+            <p>{cardValue(wonItem).toLocaleString("en-GB")} SN card value</p>
             <div className="reveal-rewards">
               {outcome.rewards.map((r, i) => (
                 <div key={i}>
