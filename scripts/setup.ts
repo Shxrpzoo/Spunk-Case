@@ -17,5 +17,6 @@ await db.transaction(async (tx) => {
   if (!old.length) await writeCatalog(tx, seedCatalog);
 });
 await db.query(await readFile("database/UPDATE-V2.sql", "utf8"));
+await db.query(await readFile("database/UPDATE-GOON.sql", "utf8"));
 console.log("Database ready. Existing progress and configuration preserved.");
 process.exit(0);

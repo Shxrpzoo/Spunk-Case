@@ -13,5 +13,6 @@ const db: DB = {
 if (!(await db.query("SELECT id FROM spunk.settings")).length)
   await writeCatalog(db, seedCatalog);
 await pg.exec(await readFile("database/UPDATE-V2.sql", "utf8"));
+await pg.exec(await readFile("database/UPDATE-GOON.sql", "utf8"));
 await pg.close();
 console.log("Development database ready.");
