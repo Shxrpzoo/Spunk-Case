@@ -53,8 +53,17 @@
 .crateHalo {
   position: absolute;
   inset: 3% 10%;
-  background: radial-gradient(ellipse, #b463fb38, transparent 66%);
+  background:
+    radial-gradient(ellipse, #c85bff66 0%, #ff6bcf3d 42%, transparent 70%);
   filter: blur(18px);
+}
+.tile :global(.case-pill),
+.room :global(.case-pill) {
+  color: 
+#f3bdff;
+  border-color: 
+#9a5ec9;
+}
 }
 .crateFloor {
   position: absolute;
