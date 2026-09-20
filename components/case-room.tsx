@@ -16,6 +16,7 @@ import {
 import type { Outcome } from "@/lib/types";
 import { ItemArt, ItemCard } from "./item-card";
 import { CustomCase } from "./custom-case";
+import goonStyles from "./goon.module.css";
 const visualRandom = () =>
   crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
 function shuffled(items: Item[]) {
@@ -180,7 +181,9 @@ export function CaseRoom({
                     ? "satchel-tile"
                     : c.id === "ash"
                       ? "ash-tile"
-                      : "")
+                      : c.id === "goon"
+                        ? goonStyles.tile
+                        : "")
                 }
                 key={c.id}
               >
@@ -191,7 +194,9 @@ export function CaseRoom({
                       ? "THE ORIGINAL"
                       : c.id === "satchel"
                         ? "SOMETHING GOT OUT"
-                        : "FRESH OUT THE SMOKE"}
+                        : c.id === "goon"
+                          ? "FOR THE GOONERS"
+                          : "FRESH OUT THE SMOKE"}
                   </span>
                   <span className="case-pill">
                     MYTHIC{" "}
@@ -260,7 +265,9 @@ export function CaseRoom({
             ? "satchel-room"
             : ca.id === "ash"
               ? "ash-room"
-              : "")
+              : ca.id === "goon"
+                ? goonStyles.room
+                : "")
         }
       >
         <div className="case-heading">
@@ -270,7 +277,9 @@ export function CaseRoom({
                 ? "SOMETHING GOT OUT"
                 : ca.id === "ash"
                   ? "FRESH OUT THE SMOKE"
-                  : "THE ORIGINAL COLLECTION"}
+                  : ca.id === "goon"
+                    ? "FOR THE GOONERS"
+                    : "THE ORIGINAL COLLECTION"}
             </span>
             <h1>{ca.name}</h1>
           </div>
