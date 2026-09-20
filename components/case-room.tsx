@@ -12,11 +12,14 @@ import {
   colors,
   type Catalog,
   type Item,
+  type Rarity,
+  type Effect,
 } from "@/lib/catalog";
 import type { Outcome } from "@/lib/types";
 import { ItemArt, ItemCard } from "./item-card";
 import { CustomCase } from "./custom-case";
 import goonStyles from "./goon.module.css";
+import autoStyles from "./auto-roll.module.css";
 const visualRandom = () =>
   crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
 function shuffled(items: Item[]) {
@@ -53,12 +56,19 @@ export function CaseRoom({
     [travel, setTravel] = useState(0),
     [duration, setDuration] = useState(0),
     [expanded, setExpanded] = useState(false),
-    [shownContents, setShownContents] = useState(24);
+    [shownContents, setShownContents] = useState(24),
+    [autoActive, setAutoActive] = useState(false),
+    [autoRemaining, setAutoRemaining] = useState(0),
+    [autoCount, setAutoCount] = useState(10),
+    [autoStop, setAutoStop] = useState<Rarity | "">(""),
+    [autoLog, setAutoLog] = useState<{ item: Item; effect?: Effect }[]>([]),
+    [autoMessage, setAutoMessage] = useState("");
   const viewport = useRef<HTMLDivElement>(null),
     timers = useRef<ReturnType<typeof setTimeout>[]>([]),
     mounted = useRef(true),
     soundRef = useRef(sound),
-    opening = useRef(false);
+    opening = useRef(false),
+    autoStartBalance = useRef(0);
   soundRef.current = sound;
   useEffect(() => {
     mounted.current = true;
@@ -80,6 +90,61 @@ export function CaseRoom({
       ? catalog.items.filter((i) => ca.weights.some((w) => w.itemId === i.id))
       : [];
   const active = stage !== "idle";
+  function finishRoll(out: Outcome) {
+    if (out.item)
+      setAutoLog((log) =>
+        [{ item: out.item!, effect: out.effect }, ...log].slice(0, 10),
+      );
+    setAutoRemaining((n) => Math.max(0, n - 1));
+    if (
+      out.item &&
+      autoStop &&
+      rarities.indexOf(out.item.rarity) >= rarities.indexOf(autoStop)
+    ) {
+      setAutoActive(false);
+      setAutoMessage(
+        `Stopped — pulled a ${out.item.rarity.toLowerCase()} card.`,
+      );
+    }
+  }
+  function startAuto() {
+    if (!signedIn) {
+      onAuth();
+      return;
+    }
+    if (!ca || active || busy || opening.current) return;
+    autoStartBalance.current = balance;
+    setAutoLog([]);
+    setAutoMessage("");
+    setAutoRemaining(autoCount);
+    setAutoActive(true);
+  }
+  function stopAuto() {
+    setAutoActive(false);
+    setAutoMessage("");
+  }
+  useEffect(() => {
+    if (!autoActive || stage !== "idle" || busy || opening.current) return;
+    if (autoRemaining <= 0) {
+      setAutoActive(false);
+      setAutoMessage("Auto-roll complete.");
+      return;
+    }
+    if (!ca) {
+      setAutoActive(false);
+      return;
+    }
+    if (ca.id !== "basic" && balance < ca.price) {
+      setAutoActive(false);
+      setAutoMessage("Stopped — not enough Spunk Nuggets for another roll.");
+      return;
+    }
+    const t = setTimeout(() => {
+      if (mounted.current) void open();
+    }, 260);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoActive, stage, autoRemaining, balance, ca?.id, ca?.price, busy]);
   async function open() {
     if (!signedIn) {
       onAuth();
@@ -103,6 +168,10 @@ export function CaseRoom({
     if (!out) {
       opening.current = false;
       setStage("idle");
+      if (autoActive) {
+        setAutoActive(false);
+        setAutoMessage("Auto-roll stopped after an error.");
+      }
       return;
     }
     const winner = catalog.items.find((i) => i.id === out.itemId);
@@ -110,6 +179,7 @@ export function CaseRoom({
       opening.current = false;
       setStage("idle");
       onOutcome(out);
+      finishRoll(out);
       return;
     }
     let cards: Item[] = [];
@@ -141,6 +211,7 @@ export function CaseRoom({
             setReel([]);
             soundRef.current(true);
             onOutcome(out);
+            finishRoll(out);
           }, ms + 100);
         }),
       );
@@ -355,6 +426,112 @@ export function CaseRoom({
             />{" "}
             Quick open
           </label>
+        </div>
+        <div className={autoStyles.panel}>
+          <div className={autoStyles.header}>
+            <span className={autoStyles.title}>AUTO-ROLL</span>
+            <div className={autoStyles.controls}>
+              <label className={autoStyles.field}>
+                <span>Rolls</span>
+                <input
+                  className={autoStyles.input}
+                  type="number"
+                  min={1}
+                  max={50}
+                  value={autoCount}
+                  disabled={autoActive}
+                  onChange={(e) =>
+                    setAutoCount(
+                      Math.min(50, Math.max(1, Number(e.target.value) || 1)),
+                    )
+                  }
+                />
+              </label>
+              <label className={autoStyles.field}>
+                <span>Stop on</span>
+                <select
+                  className={autoStyles.select}
+                  value={autoStop}
+                  disabled={autoActive}
+                  onChange={(e) => setAutoStop(e.target.value as Rarity | "")}
+                >
+                  <option value="">Nothing</option>
+                  {rarities
+                    .slice(2)
+                    .reverse()
+                    .map((r) => (
+                      <option key={r} value={r}>
+                        {r}+
+                      </option>
+                    ))}
+                </select>
+              </label>
+              <button
+                type="button"
+                className={
+                  autoStyles.button +
+                  " " +
+                  (autoActive ? autoStyles.buttonActive : "")
+                }
+                onClick={autoActive ? stopAuto : startAuto}
+                disabled={
+                  !autoActive &&
+                  (busy ||
+                    active ||
+                    (signedIn && ca.id !== "basic" && balance < ca.price))
+                }
+              >
+                {autoActive ? `Stop (${autoRemaining} left)` : "Start Auto-Roll"}
+              </button>
+            </div>
+          </div>
+          {(autoActive || autoMessage || autoLog.length > 0) && (
+            <div className={autoStyles.status}>
+              <span className={autoActive ? autoStyles.statusActive : ""}>
+                {autoActive
+                  ? `Rolling — ${autoRemaining} left…`
+                  : autoMessage || "Idle"}
+              </span>
+              {autoLog.length > 0 &&
+                (() => {
+                  const net = balance - autoStartBalance.current;
+                  return (
+                    <span
+                      className={
+                        autoStyles.net +
+                        " " +
+                        (net > 0
+                          ? autoStyles.netUp
+                          : net < 0
+                            ? autoStyles.netDown
+                            : "")
+                      }
+                    >
+                      Net {net > 0 ? "+" : ""}
+                      {net.toLocaleString("en-GB")} SN
+                    </span>
+                  );
+                })()}
+            </div>
+          )}
+          {autoLog.length > 0 && (
+            <div className={autoStyles.log}>
+              {autoLog.map((entry, i) => (
+                <span
+                  key={i}
+                  className={autoStyles.logItem}
+                  style={
+                    {
+                      "--rarity": colors[entry.item.rarity],
+                    } as React.CSSProperties
+                  }
+                >
+                  <span className={autoStyles.dot} />
+                  {entry.item.name}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
         {signedIn && balance < ca.price && (
           <p className="case-funds">
