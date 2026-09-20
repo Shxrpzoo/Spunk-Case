@@ -59,11 +59,10 @@
 }
 .tile :global(.case-pill),
 .room :global(.case-pill) {
-  color: 
-#f3bdff;
-  border-color: 
-#9a5ec9;
+  color: #f3bdff;
+  border-color: #9a5ec9;
 }
+.crateFloor {
 }
 .crateFloor {
   position: absolute;
