@@ -49,3 +49,7 @@ ALTER TABLE spunk.discoveries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE spunk.card_effects ENABLE ROW LEVEL SECURITY;
 REVOKE ALL ON spunk.discoveries,spunk.card_effects FROM PUBLIC;
 REVOKE ALL ON FUNCTION spunk.remember_discovery() FROM PUBLIC;
+
+-- Card-specific pricing and mystery collection support.
+ALTER TABLE spunk.items ADD COLUMN IF NOT EXISTS value integer CHECK(value>0);
+ALTER TABLE spunk.items ADD COLUMN IF NOT EXISTS mystery boolean NOT NULL DEFAULT false;
