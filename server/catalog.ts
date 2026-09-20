@@ -8,7 +8,7 @@ import {
 import type { DB } from "./db";
 import { GameError } from "./security";
 const id = z.string().regex(/^[a-z0-9][a-z0-9-]{0,79}$/);
-const amount = z.number().int().min(0).max(100000000);
+const amount = z.number().int().min(0).max(1000000000);
 const settings = z.object({
   startingBalance: amount,
   dailyReward: amount,
@@ -103,7 +103,7 @@ export const catalogSchema = z
 export async function readCatalog(db: DB): Promise<Catalog> {
   const [row] = await db.query<{ catalog: Catalog }>(`SELECT jsonb_build_object(
  'items',(SELECT coalesce(jsonb_agg(i ORDER BY i.id),'[]') FROM spunk.items i),
- 'cases',(SELECT coalesce(jsonb_agg(to_jsonb(ca)||jsonb_build_object('weights',(SELECT coalesce(jsonb_agg(jsonb_build_object('itemId',w.item_id,'weight',w.weight) ORDER BY w.item_id),'[]') FROM spunk.case_items w WHERE w.case_id=ca.id)) ORDER BY ca.id),'[]') FROM spunk.cases ca),
+ 'cases',(SELECT coalesce(jsonb_agg(to_jsonb(ca)||jsonb_build_object('weights',(SELECT coalesce(jsonb_agg(jsonb_build_object('itemId',w.item_id,'weight',w.weight) ORDER BY w.item_id),'[]') FROM spunk.case_items w WHERE w.case_id=ca.id)) ORDER BY ca.sort_order,ca.id),'[]') FROM spunk.cases ca),
  'lines',(SELECT coalesce(jsonb_agg(to_jsonb(l)||jsonb_build_object('itemIds',(SELECT coalesce(jsonb_agg(m.item_id ORDER BY m.item_id),'[]') FROM spunk.line_items m WHERE m.line_id=l.id)) ORDER BY l.id),'[]') FROM spunk.lines l),
  'settings',value) AS catalog FROM spunk.settings WHERE id=1`);
   if (!row) throw new Error("SETUP_REQUIRED");
@@ -135,7 +135,7 @@ export async function writeCatalog(db: DB, input: unknown) {
     );
   for (const ca of c.cases) {
     await db.query(
-      "INSERT INTO spunk.cases VALUES($1,$2,$3,$4) ON CONFLICT(id) DO UPDATE SET name=$2,price=$3,enabled=$4",
+      "INSERT INTO spunk.cases(id,name,price,enabled) VALUES($1,$2,$3,$4) ON CONFLICT(id) DO UPDATE SET name=$2,price=$3,enabled=$4",
       [ca.id, ca.name, ca.price, ca.enabled],
     );
     await db.query("DELETE FROM spunk.case_items WHERE case_id=$1", [ca.id]);
