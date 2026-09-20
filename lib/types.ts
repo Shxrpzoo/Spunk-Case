@@ -36,6 +36,7 @@ export type Outcome = {
   sourceEffect?: Effect;
   value?: number;
   itemId?: string;
+  item?: import("./catalog").Item;
   duplicate?: boolean;
   won?: boolean;
   face?: string;
@@ -60,4 +61,31 @@ export type Leaderboards = {
   cards: LeaderboardEntry[];
   nuggets: LeaderboardEntry[];
   cases: LeaderboardEntry[];
+};
+
+export type CoinStatsEntry = {
+  id: string;
+  name: string;
+  flips: number;
+  wins: number;
+  losses: number;
+  wagered: number;
+  won: number;
+  lost: number;
+  net: number;
+  biggest_wager: number;
+  biggest_win: number;
+};
+export type CoinStats = {
+  recent: {
+    id: string;
+    name: string;
+    wager: number;
+    payout: number;
+    net: number;
+    won: boolean;
+    created_at: string;
+  }[];
+  players: CoinStatsEntry[];
+  totals: { flips: number; wagered: number; won: number; lost: number };
 };

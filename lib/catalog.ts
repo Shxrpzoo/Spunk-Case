@@ -1,3 +1,4 @@
+import { goonSource, mysteryArt } from "./goon-catalog";
 export const rarities = [
   "COMMON",
   "UNCOMMON",
@@ -15,7 +16,14 @@ export const colors: Record<Rarity, string> = {
   LEGENDARY: "#ffcb62",
   MYTHIC: "#ff6baf",
 };
-export type Item = { id: string; name: string; rarity: Rarity; image: string };
+export type Item = {
+  id: string;
+  name: string;
+  rarity: Rarity;
+  image: string;
+  value?: number;
+  mystery?: boolean;
+};
 export type Case = {
   id: string;
   name: string;
@@ -174,6 +182,14 @@ export const satchelSource: [string, Rarity][] = [
 ];
 export const seedCatalog: Catalog = {
   items: [
+    ...goonSource.map((i) => ({
+      id: i.id,
+      name: i.name,
+      rarity: i.rarity,
+      image: "/assets/items/" + i.id + ".webp",
+      mystery: !!i.mystery,
+      value: i.value,
+    })),
     ...source.map(([file, rarity]) => ({
       id: slug(file),
       name: file.replace(/\.(png|jpg)$/i, ""),
@@ -194,6 +210,13 @@ export const seedCatalog: Catalog = {
     })),
   ],
   cases: [
+    {
+      id: "goon",
+      name: "THE RETURN OF THE GOON",
+      price: 500,
+      enabled: true,
+      weights: goonSource.map((i) => ({ itemId: i.id, weight: i.weight })),
+    },
     {
       id: "basic",
       name: "SPUNK CASE - BASIC",
@@ -308,7 +331,26 @@ export const cardValues: Record<Rarity, number> = {
   MYTHIC: 15000,
 };
 export const cardValue = (item: Item, effect: Effect = "RAW") =>
-  cardValues[item.rarity] * effectMultipliers[effect];
+  (item.value ?? cardValues[item.rarity]) * effectMultipliers[effect];
+
+export function hiddenMystery(item: Item): Item {
+  return item.mystery
+    ? { ...item, name: "Mystery Item", image: mysteryArt }
+    : item;
+}
+
+// Values use each card's most accessible pull percentage, not a rarity-wide
+// flat price. Explicit jackpot values remain fixed as requested.
+export function valueFromOdds(percent: number) {
+  return Math.max(
+    5,
+    Math.round(400 / Math.pow(Math.max(percent, 0.001), 1.5) / 5) * 5,
+  );
+}
+for (const item of seedCatalog.items) {
+  const p = Math.max(...seedCatalog.cases.map((c) => chance(c, item.id)));
+  item.value ??= valueFromOdds(p);
+}
 export function rarityGroups(c: Catalog) {
   return c.cases.flatMap((ca) =>
     rarities.map((r) => ({
@@ -320,6 +362,22 @@ export function rarityGroups(c: Catalog) {
       ),
     })),
   );
+}
+
+// The new case has much smaller collections (including one 40% card).
+// Keep its one-time completion bonuses modest without changing older cases.
+export function collectionReward(c: Catalog, caseId: string, rarity: Rarity) {
+  const goonRewards: Record<Rarity, number> = {
+    COMMON: 250,
+    UNCOMMON: 100,
+    RARE: 500,
+    EPIC: 1000,
+    LEGENDARY: 5000,
+    MYTHIC: 25000,
+  };
+  return caseId === "goon"
+    ? goonRewards[rarity]
+    : c.settings.rarityRewards[rarity];
 }
 
 export const effectChances = { SPUNK: 50, POO: 30, SMEGMA: 10 } as const;
