@@ -1,0 +1,409 @@
+.bell {
+  position: relative;
+  flex-shrink: 0;
+}
+.bell > span {
+  position: absolute;
+  top: -3px;
+  right: -5px;
+  background: #d5ff7b;
+  color: #142000;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 5px;
+  min-width: 17px;
+}
+.dialog {
+  position: relative;
+  width: min(1180px, 96vw);
+  max-height: 92dvh;
+  overflow: auto;
+  background:
+    radial-gradient(ellipse at top right, #293321 0, transparent 45%), #14181a;
+  border: 1px solid #4d5940;
+  border-radius: 24px;
+  padding: 36px;
+  box-shadow: 0 40px 120px #000b;
+}
+.dialog h2 {
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(25px, 4vw, 44px);
+  margin: 10px 40px 20px 0;
+}
+.dialog h3 {
+  margin: 20px 0 12px;
+}
+.dialog p {
+  line-height: 1.6;
+  color: #aeb6a8;
+}
+.close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 3;
+}
+.actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.actions > button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 15px;
+  background: linear-gradient(140deg, #333d26, #1a2019);
+  border: 1px solid #505d40;
+  border-radius: 16px;
+  padding: 25px;
+  color: #e6f5d2;
+}
+.actions strong {
+  font-size: 18px;
+}
+.actions span {
+  color: #aeb6a8;
+  font-size: 12px;
+}
+.actions svg {
+  color: #d5ff7b;
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.twoColumns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 24px 0;
+}
+.picker {
+  min-width: 0;
+  border: 1px solid #343e32;
+  border-radius: 16px;
+  padding: 18px;
+  background: #101411;
+}
+.picker h3 {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0;
+}
+.picker small {
+  font-size: 12px;
+  color: #a7b199;
+}
+.dialog label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: #c7d0bf;
+}
+.dialog input,
+.dialog select {
+  color: #eff5e9;
+  background: #0d100e;
+  border: 1px solid #46523c;
+  border-radius: 8px;
+  min-height: 42px;
+  padding: 9px 12px;
+  width: 100%;
+}
+.picker > input {
+  margin: 18px 0 12px;
+}
+.pickGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  max-height: 420px;
+  overflow: auto;
+  padding: 4px;
+}
+.pickGrid > div {
+  border: 1px solid #313a2d;
+  border-radius: 12px;
+  padding: 6px;
+  min-width: 0;
+}
+.pickGrid > div.selected {
+  border-color: #d5ff7b;
+  background: #263519;
+}
+.pickGrid :global(.card-art) {
+  height: 130px;
+}
+.pickGrid :global(.item-meta) {
+  padding: 10px;
+}
+.pickGrid :global(.item-meta h3) {
+  font-size: 14px;
+  margin: 6px 0;
+}
+.pickGrid label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 6px;
+}
+.pickGrid select {
+  width: 65px;
+  min-height: 32px;
+  padding: 3px 8px;
+}
+.previewCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin-top: 15px;
+}
+.previewCards :global(.card-art) {
+  height: 150px;
+}
+.gift {
+  max-width: 500px;
+  padding: 24px 0;
+}
+.inbox {
+  display: grid;
+  gap: 10px;
+}
+.inboxRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  padding: 20px 24px;
+  background: #171d18;
+  border: 1px solid #323d30;
+  border-radius: 14px;
+  color: #e5eedc;
+  text-align: left;
+}
+.inboxRow > span:first-of-type {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.inboxRow small,
+.inboxRow > span:last-of-type:not(:first-of-type) {
+  color: #98a790;
+  font-size: 12px;
+}
+.inboxRow svg {
+  color: #c8ed8f;
+  flex-shrink: 0;
+}
+.inboxRow:hover {
+  border-color: #b6d37b;
+}
+.unread {
+  background: linear-gradient(90deg, #24391e, #171d18);
+}
+.dot {
+  width: 9px;
+  height: 9px;
+  background: #cfff80;
+  border-radius: 50%;
+}
+.success {
+  border: 1px solid #617844;
+  border-radius: 10px;
+  padding: 14px;
+  background: #243719;
+  color: #d5ffb8;
+}
+.caseChoices {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+.caseChoices > button {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  background: #171c17;
+  border: 1px solid #46513c;
+  padding: 10px;
+  border-radius: 12px;
+  color: #eff5e9;
+}
+.caseChoices > button > div {
+  height: 100px !important;
+  min-height: 0 !important;
+  width: 100%;
+}
+.caseChoices > button strong {
+  font-size: 12px;
+}
+.caseChoices > button small {
+  color: #c7ef87;
+}
+.roundChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0;
+}
+.roundChips button {
+  padding: 8px 12px;
+  background: #334424;
+  border: 1px solid #7e9952;
+  color: #edffd9;
+  border-radius: 30px;
+  font-size: 11px;
+}
+.battleCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 14px;
+  max-width: 950px;
+  margin: 18px auto;
+}
+.battleCard {
+  min-width: 0;
+  max-width: 220px;
+  width: 100%;
+  justify-self: center;
+  perspective: 800px;
+}
+.battleCard > small {
+  display: block;
+  text-align: center;
+  font-size: 10px;
+  color: #9ba693;
+  margin: 10px 0;
+}
+.battleCard :global(.item-card) {
+  animation: reveal 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.battleCard :global(.card-art) {
+  height: 155px;
+}
+.battleCard :global(.item-meta h3) {
+  font-size: 15px;
+  margin: 8px 0;
+}
+.hiddenCard {
+  height: 280px;
+  border: 1px solid #6e5d39;
+  border-radius: 14px;
+  background: repeating-linear-gradient(
+    45deg,
+    #141514 0px,
+    #141514 4px,
+    #171918 4px,
+    #171918 8px
+  );
+  box-shadow: inset 0 0 25px #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #dec180;
+  gap: 30px;
+}
+.hiddenCard span {
+  font-size: 80px;
+  font-weight: 900;
+  text-shadow: 0 0 40px #a5803270;
+}
+.hiddenCard small {
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+.dealer {
+  background: linear-gradient(180deg, #2b241b70, transparent);
+  border: 1px solid #50442f;
+  border-radius: 16px;
+  margin: 24px 0;
+  padding: 15px;
+}
+.dealer h3 {
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.result {
+  text-align: center;
+  border: 1px solid #856346;
+  background: radial-gradient(ellipse at center, #48251b, #1b1715);
+  border-radius: 18px;
+  padding: 30px;
+}
+.result > span {
+  font-size: clamp(25px, 4vw, 48px);
+  font-weight: 900;
+  color: #ffb67c;
+}
+.result strong {
+  font-size: 25px;
+}
+.win {
+  background: radial-gradient(ellipse at center, #44501c, #161e12);
+  border-color: #bfda70;
+}
+.win > span {
+  color: #e4ff9a;
+  text-shadow: 0 0 30px #beff7550;
+}
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: rotateY(85deg) translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 700px) {
+  .dialog {
+    padding: 25px 16px;
+    border-radius: 18px;
+  }
+  .twoColumns,
+  .actions {
+    grid-template-columns: 1fr;
+  }
+  .caseChoices {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .inboxRow {
+    padding: 16px;
+    gap: 12px;
+  }
+  .inboxRow > span:last-of-type:not(:first-of-type) {
+    display: none;
+  }
+  .battleCards {
+    gap: 8px;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  }
+  .battleCard :global(.card-art) {
+    height: 115px;
+  }
+  .hiddenCard {
+    height: 230px;
+  }
+  .pickGrid {
+    max-height: 330px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .battleCard :global(.item-card) {
+    animation: none;
+  }
+}
