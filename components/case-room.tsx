@@ -437,12 +437,12 @@ export function CaseRoom({
                   className={autoStyles.input}
                   type="number"
                   min={1}
-                  max={50}
+                  max={500}
                   value={autoCount}
                   disabled={autoActive}
                   onChange={(e) =>
                     setAutoCount(
-                      Math.min(50, Math.max(1, Number(e.target.value) || 1)),
+                      Math.min(500, Math.max(1, Number(e.target.value) || 1)),
                     )
                   }
                 />
