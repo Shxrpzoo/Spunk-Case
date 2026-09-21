@@ -1,0 +1,22 @@
+import type { Item } from "./catalog";
+export const BATTLE_FEE = 1000000;
+export type Battle = {
+  id: string;
+  challenger_id: string;
+  opponent_id: string;
+  challenger_name: string;
+  opponent_name: string;
+  mode: "normal" | "crazy";
+  status: "pending" | "completed" | "declined";
+  entry_fee: number;
+  cases: { id: string; name: string }[];
+  challenger_cards: Item[] | null;
+  opponent_cards: Item[] | null;
+  challenger_total: number | null;
+  opponent_total: number | null;
+  winner_id: string | null;
+  tie: boolean;
+  created_at: string;
+  completed_at: string | null;
+};
+export type BattleInbox = { battles: Battle[]; total: number; page: number };
